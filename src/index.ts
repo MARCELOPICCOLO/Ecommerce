@@ -5,8 +5,9 @@ import {createConnection} from 'typeorm';
 
 
 const app = express();
-app.use(router);
 app.use(express.json());
+app.use(router);
+
 
 createConnection();
 

@@ -1,12 +1,9 @@
 import {Router}from 'express';
-import {List} from '../controller/productContoller';
+import {List,Create} from '../controller/productContoller';
 
 const router = Router();
 
-router.get('/',(req, res)=>{
-    return res.json({message : "deu certo essa merda"});
-})
-
 router.get('/list', List);
+router.post('/create',Create);
 
 export default router; 
