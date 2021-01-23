@@ -1,8 +1,6 @@
 import {getRepository} from 'typeorm';
 import {Product} from '../entity/Product';
-import {request, Request, response, Response} from 'express';
-import {uuid} from 'uuidv4';
-
+import {Request, Response} from 'express';
 
 
 export const List = async (request: Request, response : Response) =>{
@@ -34,7 +32,7 @@ export const Delete = async (request: Request, response: Response)=>{
         const res = await getRepository(Product).findOne(id);
         return response.json('Product removed'); 
     }
-
+    
     return response.status(404).json('product not found');
 }
 
