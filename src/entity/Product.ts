@@ -1,10 +1,10 @@
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne} from 'typeorm';
 import { Category } from './Category';
 
-@Entity()
+@Entity("Products")
 export class Product{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column()
@@ -13,13 +13,14 @@ export class Product{
     @Column()
     price: number;
 
+    @ManyToOne(()=>Category, products => Product, {eager: true})
+    category : Category
+
     @CreateDateColumn()
     createAt : Date;
 
     @UpdateDateColumn()
     updateAt : Date;
 
-    @ManyToOne(() => Category, cat => cat.products)
-    cat : Category
-
+   
 }
