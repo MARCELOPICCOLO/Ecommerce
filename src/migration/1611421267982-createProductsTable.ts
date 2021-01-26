@@ -7,9 +7,15 @@ export class createProductsTable1611421267982 implements MigrationInterface {
             name: "products",
             columns: [
                 {
-                    name: "id",
-                    type: "varchar",
-                    isPrimary: true
+                    name: 'id',
+                    type: 'uuid',
+                    isPrimary: true,
+                    generationStrategy :'uuid',
+                    default : 'uuid_generate_v4()'
+                },
+                {
+                    name: 'category_id',
+                    type: 'uuid',
                 },
                 {
                     name: "name",
@@ -17,7 +23,13 @@ export class createProductsTable1611421267982 implements MigrationInterface {
                 },
                 {
                     name: "price",
-                    type: "varchar",
+                    type: "numeric",
+                    precision: 10,
+                    scale : 2
+                },
+                {
+                    name: "quantify",
+                    type: "numeric",
                 },
                 {
                     name: 'created_at',
@@ -25,8 +37,18 @@ export class createProductsTable1611421267982 implements MigrationInterface {
                     default: 'now()'
                 },
                 {
-                    name: 'update_at',
+                    name: 'updated_at',
                     type: 'timestamp',      
+                }
+            ],
+            foreignKeys : [
+                {
+                    name :'foreignCategory',
+                    columnNames : ['category_id'],
+                    referencedTableName : 'categories',
+                    referencedColumnNames: ['id'],
+                    onDelete: 'CASCADE',
+                    onUpdate: 'CASCADE'
                 }
             ]
         }), true)

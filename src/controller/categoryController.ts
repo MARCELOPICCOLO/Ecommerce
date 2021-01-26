@@ -1,5 +1,5 @@
-import {getRepository, getTreeRepository} from 'typeorm'
-import {request, Request, response, Response} from 'express'
+import {getRepository} from 'typeorm'
+import {Request, Response} from 'express'
 import {Category} from '../entity/Category'
 
 
