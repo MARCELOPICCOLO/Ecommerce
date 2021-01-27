@@ -1,20 +1,19 @@
 import {Router}from 'express';
-import {List,Create, Update, Delete} from '../controller/productContoller'
-import {getCategories,createCategory,updateCategory, deleteCategory} from '../controller/categoryController'
+import {getCustomers, createCustomer,updateCostumer, deleteCustomer} from '../controller/CustomerController'
+import {getOrders,createOrder,getOrder} from '../controller/OrderController'
 
 const router = Router();
 
 //Product's routers
-router.get('/list', List);
-router.post('/create',Create);
-router.put('/update/:id', Update);
-router.put('/delete/:id',Delete);
+router.get('/getCustomers', getCustomers);
+router.post('/createCustomer', createCustomer);
+router.put('/updateCostumer/:id',updateCostumer);
+router.get('/deleteCustomer/:id', deleteCustomer);
 
-//Category's routers
-router.get('/categories', getCategories);
-router.post('/createcategory', createCategory);
-router.put('/updateCategory/:id',updateCategory);
-router.get('/deleteCategory/:id', deleteCategory);
-
+//Orders
+router.get('/getOrders',getOrders);
+router.post('/createOrder',createOrder)
+router.get('/getOrder',getOrder)
+ 
 
 export default router; 
