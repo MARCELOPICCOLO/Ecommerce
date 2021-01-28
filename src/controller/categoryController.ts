@@ -1,6 +1,7 @@
 import {getRepository} from 'typeorm'
 import {Request, Response} from 'express'
 import {Category} from '../entity/Category'
+import { isUuid } from 'uuidv4';
 
 
 export const getCategories = async (request: Request, response: Response)=>{
@@ -15,23 +16,29 @@ export const createCategory = async (request: Request, response: Response)=>{
 
 export const updateCategory = async (request: Request, response: Response)=>{
     const {id} = request.params
-    const cat = await getRepository(Category).update(id, request.body);
+    if(isUuid(id)){
+        const cat = await getRepository(Category).update(id, request.body);
 
-    if(cat.affected===1){
-        const category = await getRepository(Category).findOne(id);
-        return response.json(category);
+        if(cat.affected===1){
+            const category = await getRepository(Category).findOne(id);
+            return response.json(category);
+        }
+
     }
-
+    
     return response.status(404).json('category not found');
 }
 
 export const deleteCategory = async (request: Request, response : Response)=>{
     const {id} = request.params;
-    const cat = await getRepository(Category).delete(id);
+    if(isUuid(id)){
+        const cat = await getRepository(Category).delete(id);
 
-    if(cat.affected===1){
-        const deleted = await getRepository(Category).findOne(id);
-        return response.json('category removed');
+        if(cat.affected===1){
+            const deleted = await getRepository(Category).findOne(id);
+            return response.json('category removed');
+        }
+
     }
 
     return response.status(404).json('category not found');
