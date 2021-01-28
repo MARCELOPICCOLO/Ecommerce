@@ -1,6 +1,7 @@
 import {Router}from 'express';
 import {getCustomers, createCustomer,updateCostumer, deleteCustomer} from '../controller/CustomerController'
 import {getOrders,createOrder,getOrder} from '../controller/OrderController'
+import {getCategories} from '../controller/categoryController'
 
 const router = Router();
 
@@ -14,6 +15,9 @@ router.get('/deleteCustomer/:id', deleteCustomer);
 router.get('/getOrders',getOrders);
 router.post('/createOrder',createOrder)
 router.get('/getOrder',getOrder)
+
+//Category 
+router.get('/getCategories',getCategories);
  
 
 export default router; 
