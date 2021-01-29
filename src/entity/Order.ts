@@ -1,5 +1,6 @@
-import {Column,JoinColumn, CreateDateColumn, Entity,ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm'
+import {Column,JoinColumn, CreateDateColumn, Entity,ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, OneToMany} from 'typeorm'
 import { Customer } from './Customer';
+import { OrderProduct } from './OrderProduct';
 
 
 @Entity('orders')
@@ -18,5 +19,9 @@ export class Order{
     @ManyToOne(()=>Customer, orders => Order,{eager: true})
     @JoinColumn()
     customer: Customer
+
+
+    @OneToMany(()=>OrderProduct, order =>OrderProduct)
+    Ordersproducts : OrderProduct[]
 
 }
