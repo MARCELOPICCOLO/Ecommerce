@@ -21,6 +21,4 @@ export class Customer {
 
     @OneToMany(()=>Order, customer => Customer)
     orders : Order[];
-
-
 }
