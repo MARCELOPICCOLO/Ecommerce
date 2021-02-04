@@ -1,17 +1,17 @@
-import { response } from 'express';
-import {getRepository}from  'typeorm'
-import {Image} from  '../entity/Image'
+import {initClient_} from '../services/googleApi';
 
 
+export const uploadImage = async (request, response)=>{
 
-export const getImage = async (request,response)=>{
-      const list = await getRepository(Image).find();
-      return response.json(list);
-}
+    const {fileName, filePath} = request.body;
+    try{
+        await initClient_(filePath, fileName)
+        //gravar no banco
 
-
-export const createImage = async (request,reponse)=>{   
+        return response.json({message: 'passou por toda as etapas'});
+        
+    }catch(err){
+        console.log(err);
+    }
     
-      return response.json({message: 'imagem carregada'});
 }
-

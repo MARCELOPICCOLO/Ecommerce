@@ -1,3 +1,5 @@
+import { oauth2 } from "googleapis/build/src/apis/oauth2";
+
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
@@ -9,12 +11,17 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-// Load client secrets from a local file.
-fs.readFile('credentials.json', (err, content) => {
-  if (err) return console.log('Error loading client secret file:', err);
-  // Authorize a client with credentials, then call the Google Drive API.
-  authorize(JSON.parse(content), uploadeGoogle);
-});
+export const initClient_ = function initClient (filePath, fileName){
+ 
+    // Load client secrets from a local file.
+    fs.readFile('credentials.json', (err, content) => {
+        if (err) return console.log('Error loading client secret file:', err);
+        // Authorize a client with credentials, then call the Google Drive API.
+        authorize(JSON.parse(content),(auth)=>{
+            upLoadGoogle(auth, filePath, fileName)
+        });
+      });
+}
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -22,18 +29,19 @@ fs.readFile('credentials.json', (err, content) => {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
+ function authorize(credentials, callback) {
   const {client_secret, client_id, redirect_uris} = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
 
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback);
+    if (err) return token(oAuth2Client, callback);
     oAuth2Client.setCredentials(JSON.parse(token));
     callback(oAuth2Client);
   });
 }
+
 
 /**
  * Get and store new token after prompting for user authorization, and then
@@ -70,28 +78,47 @@ function getAccessToken(oAuth2Client, callback) {
  * Lists the names and IDs of up to 10 files.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
+function listFiles(auth) {
+  const drive = google.drive({version: 'v3', auth});
+  drive.files.list({
+    pageSize: 10,
+    fields: 'nextPageToken, files(id, name)',
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const files = res.data.files;
+    if (files.length) {
+      console.log('Files:');
+      files.map((file) => {
+        console.log(`${file.name} (${file.id})`);
+      });
+    } else {
+      console.log('No files found.');
+    }
+  })
+}
 
+function upLoadGoogle(auth,filePath, fileName){
+  
 
-function uploadeGoogle(auth){
-    const drive = google.drive({version:'v3', auth});
-    const fileMetadata = {
-        'name': 'photo.jpg'
+    const drive = google.drive({version: 'v3', auth})
+    var fileMetadata = {
+        'name': fileName
       };
-      const media = {
+      var media = {
         mimeType: 'image/jpg',
-        body: fs.createReadStream('jaina2.jpg')
+        body: fs.createReadStream(filePath)
       };
       drive.files.create({
         resource: fileMetadata,
         media: media,
-        auth: auth,
-        fields: 'id'
-      }, (err) => {
+        fields: 'id',
+        auth: auth
+      }, function (err, file) {
         if (err) {
           // Handle error
           console.error(err);
         } else {
-          console.log('uploaded!!');
+          console.log('uploaded');
         }
-      });
+    });  
 }
