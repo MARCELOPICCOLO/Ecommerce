@@ -5,6 +5,7 @@ import {getCategories,createCategory,updateCategory, deleteCategory} from '../co
 import {getProducts,createProduct,updateProduct,deleteProduct} from '../controller/ProductController'
 import {getOrdersProducts,createOrderProduct,updateOrderProduct} from '../controller/OrdersProductsController'
 import {uploadImage} from '../controller/ImageController';
+import {upload} from '../services/multerconfig'
 const router = Router();
 
 //Product's routers
@@ -36,6 +37,6 @@ router.post('/createOrderProduct',createOrderProduct);
 router.put('/updateOrderProduct/:product_id/:order_id',updateOrderProduct);
 
 //images
-router.post('/uploadImage',uploadImage);
+router.post('/uploadImage',upload.single('images'),uploadImage);
 
 export default router; 

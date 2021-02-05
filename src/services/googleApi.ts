@@ -1,4 +1,5 @@
 import { oauth2 } from "googleapis/build/src/apis/oauth2";
+import {uuid} from 'uuidv4'
 
 const fs = require('fs');
 const readline = require('readline');
@@ -18,7 +19,9 @@ export const initClient_ = function initClient (filePath, fileName){
         if (err) return console.log('Error loading client secret file:', err);
         // Authorize a client with credentials, then call the Google Drive API.
         authorize(JSON.parse(content),(auth)=>{
-            upLoadGoogle(auth, filePath, fileName)
+            upLoadGoogle(auth, filePath, fileName);
+      
+           listFiles(auth);
         });
       });
 }
@@ -79,46 +82,49 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles(auth) {
-  const drive = google.drive({version: 'v3', auth});
-  drive.files.list({
-    pageSize: 10,
-    fields: 'nextPageToken, files(id, name)',
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const files = res.data.files;
-    if (files.length) {
-      console.log('Files:');
-      files.map((file) => {
-        console.log(`${file.name} (${file.id})`);
-      });
-    } else {
-      console.log('No files found.');
-    }
-  })
+    const drive = google.drive({version: 'v3', auth})
+    drive.files.list({
+      pageSize: 10,
+      fields: "nextPageToken, files(id, name)",
+    }, (err, res) => {
+      if (err) return console.log('The API returned an error: ' + err);
+      const files = res.data.files;
+      // console.log(res);
+      if (files.length) {
+      //   console.log(files);
+        files.map((file) => {
+          console.log(`https://docs.google.com/uc?id=${file.id}`);
+        });
+      } else {
+        console.log('No files found.');
+      }
+    })
 }
 
-function upLoadGoogle(auth,filePath, fileName){
-  
 
-    const drive = google.drive({version: 'v3', auth})
-    var fileMetadata = {
-        'name': fileName
-      };
-      var media = {
-        mimeType: 'image/jpg',
-        body: fs.createReadStream(filePath)
-      };
-      drive.files.create({
-        resource: fileMetadata,
-        media: media,
-        fields: 'id',
-        auth: auth
-      }, function (err, file) {
-        if (err) {
-          // Handle error
-          console.error(err);
-        } else {
-          console.log('uploaded');
-        }
-    });  
+    function upLoadGoogle(auth,filePath, fileName){
+        var folderId ='1axu-POP9minfH5jO8ansaVwF_OKZ30Ur';
+        const drive = google.drive({version: 'v3', auth});
+    
+        var fileMetadata = {
+            'name': fileName,
+            parents : [folderId]
+        };
+        var media = {
+            mimeType: 'image/jpg',
+            body: fs.createReadStream(filePath)
+        };
+        drive.files.create({
+            resource: fileMetadata,
+            media: media,
+            fields: 'id',
+            auth: auth
+        }, function (err, file) {
+            if (err) {
+            // Handle error
+            console.error(err);
+            } else {
+            console.log('uploaded');
+            }
+        });  
 }
