@@ -2,16 +2,10 @@
 
 Steps to run this project:
 
-1- criei as migratons utilizando o typeorm como frameworks para relacionamento das tabelas: 
-    customer
-    products
-    category
-    images,
-    order,
-    orderProducs
-    
-2- configuração do banco, utilizando o postgresSql
-    
-3- rotas, entidade,models e contollers e utilizando o insomnima para teste de rotas. 
+1- created the migratons using typeorm as frameworks for table relationship: customer products category images, order, orderProducs
 
-4- integrei a google drive api para upload de arquivos utilizando o multer para salvamento das imagens em um diretorio especifico no google drive pessoal.
+2- bank configuration using postgresSql
+
+3- routes, entity, models and contollers and using the name for route testing.
+
+4- I integrated the google drive api to upload files using the multer to save the images in a specific directory on the personal google drive.
