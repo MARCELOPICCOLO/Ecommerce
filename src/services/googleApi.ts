@@ -20,8 +20,8 @@ export const initClient_ = function initClient (filePath, fileName){
         // Authorize a client with credentials, then call the Google Drive API.
         authorize(JSON.parse(content),(auth)=>{
             upLoadGoogle(auth, filePath, fileName);
-      
-           listFiles(auth);
+            listFilesFolder(auth);
+        //    listFiles(auth);
         });
       });
 }
@@ -102,29 +102,61 @@ function listFiles(auth) {
 }
 
 
-    function upLoadGoogle(auth,filePath, fileName){
-        var folderId ='1axu-POP9minfH5jO8ansaVwF_OKZ30Ur';
-        const drive = google.drive({version: 'v3', auth});
+function upLoadGoogle(auth,filePath, fileName){
+    //folder in google drive
+    var folderId ='1axu-POP9minfH5jO8ansaVwF_OKZ30Ur';
+    const drive = google.drive({version: 'v3', auth});
     
-        var fileMetadata = {
-            'name': fileName,
-            parents : [folderId]
-        };
-        var media = {
-            mimeType: 'image/jpg',
-            body: fs.createReadStream(filePath)
-        };
-        drive.files.create({
-            resource: fileMetadata,
-            media: media,
-            fields: 'id',
-            auth: auth
-        }, function (err, file) {
-            if (err) {
-            // Handle error
-            console.error(err);
-            } else {
-            console.log('uploaded');
-            }
-        });  
+    var fileMetadata = {
+    'name': fileName,
+    parents : [folderId]
+    };
+    var media = {
+         mimeType: 'image/jpg',
+         body: fs.createReadStream(filePath)
+    };
+    drive.files.create({
+     resource: fileMetadata,
+    media: media,
+    fields: 'id',
+    auth: auth
+    }, function (err, file) {
+     if (err) {
+     // Handle error
+    console.error(err);
+    } else {
+    console.log('uploaded');
+    }
+  });  
 }
+
+
+function listFilesFolder(auth) {
+    const drive = google.drive({version: 'v3', auth})
+
+    drive.files.list({
+    pageSize: 10,
+    q: "'1axu-POP9minfH5jO8ansaVwF_OKZ30Ur' in parents and trashed = false",
+    fields: 'nextPageToken, files(id, name, parents)',
+
+    }, (err, res) => {
+      if (err) return console.log('The API returned an error: ' + err);
+      const files = res.data.files;
+      // console.log(res);
+      if (files.length) {
+      //   console.log(files);
+        files.map((file) => {
+          console.log(`https://docs.google.com/uc?id=${file.id}`);
+        });
+      } else {
+        console.log('No files found.');
+      }
+    })
+}
+
+// $optParams = array(
+//     'pageSize' => 10,
+//     'fields' => "nextPageToken, files(contentHints/thumbnail,fileExtension,iconLink,id,name,size,thumbnailLink,webContentLink,webViewLink,mimeType,parents)",
+//     'q' => "'".$folderId."' in parents"
+//     );
+//   $results = $service->files->listFiles($optParams);
